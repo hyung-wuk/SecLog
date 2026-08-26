@@ -1,5 +1,6 @@
 package com.wjsguddnr.SecLog.study.service;
 
+import com.wjsguddnr.SecLog.global.exception.StudyNotFoundException;
 import com.wjsguddnr.SecLog.study.domain.Category;
 import com.wjsguddnr.SecLog.study.domain.Study;
 import com.wjsguddnr.SecLog.study.dto.StudyCreateRequest;
@@ -52,8 +53,8 @@ public class StudyService {
     }
 
     public StudyResponse findStudyById(Long id) { //단건 조회
-        Study study = studyRepository.findById(id).orElseThrow(); //.findById(id).orElseThrow() : 값이 있으면 그 값을 꺼내고, 없으면 예외를 던져라
-        // -> newStudyNotFoundException(id) 필요
+        Study study = studyRepository.findById(id).orElseThrow(()-> new StudyNotFoundException(id));
+        //.findById(id).orElseThrow() : 값이 있으면 그 값을 꺼내고, 없으면 예외를 던져라
         StudyResponse response = new StudyResponse(
                 study.getId(), study.getTitle(),
                 study.getContent(), study.getCategory(),
@@ -64,7 +65,7 @@ public class StudyService {
 
     @Transactional //해당 어노테이션이 붙어야 studyRepositoriy.save()없이 자동으로 업데이트 가능 <- 이를 Dirtychecking이라고 함
     public void putStudy(Long id, StudyPutRequest request) {
-        Study study = studyRepository.findById(id).orElseThrow(); //조회후
+        Study study = studyRepository.findById(id).orElseThrow(()-> new StudyNotFoundException(id)); //조회후
 
         study.put(
                 request.getTitle(), request.getContent(),
@@ -75,7 +76,7 @@ public class StudyService {
 
     @Transactional
     public void patchStudy(Long id, StudyPatchRequest request) {
-        Study study = studyRepository.findById(id).orElseThrow();
+        Study study = studyRepository.findById(id).orElseThrow(()-> new StudyNotFoundException(id));
 
         study.patch(
                 request.getTitle(), request.getContent(),
@@ -86,7 +87,7 @@ public class StudyService {
 
     @Transactional //DirtyChecking을 위한것이 아닌 조회->삭제를 하나의 논리단위로 묶기위해 단 어노테이션
     public void deleteStudyById(Long id){
-        Study study = studyRepository.findById(id).orElseThrow();
+        Study study = studyRepository.findById(id).orElseThrow(()-> new StudyNotFoundException(id));
 
         studyRepository.delete(study);
     }
