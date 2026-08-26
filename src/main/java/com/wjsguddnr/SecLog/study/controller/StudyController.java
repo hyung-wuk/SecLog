@@ -1,6 +1,8 @@
 package com.wjsguddnr.SecLog.study.controller;
 
 import com.wjsguddnr.SecLog.study.dto.StudyCreateRequest;
+import com.wjsguddnr.SecLog.study.dto.StudyPatchRequest;
+import com.wjsguddnr.SecLog.study.dto.StudyPutRequest;
 import com.wjsguddnr.SecLog.study.dto.StudyResponse;
 import com.wjsguddnr.SecLog.study.service.StudyService;
 import jakarta.validation.Valid;
@@ -35,5 +37,17 @@ public class StudyController {
     public ResponseEntity<StudyResponse> getStudyById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(studyService.findStudyById(id));
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Void> putStudy(@PathVariable Long id, @Valid @RequestBody StudyPutRequest request){
+        studyService.putStudy(id, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<Void> patchStudy(@PathVariable Long id, @Valid @RequestBody StudyPatchRequest request){
+        studyService.patchStudy(id, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -3,8 +3,11 @@ package com.wjsguddnr.SecLog.study.service;
 import com.wjsguddnr.SecLog.study.domain.Category;
 import com.wjsguddnr.SecLog.study.domain.Study;
 import com.wjsguddnr.SecLog.study.dto.StudyCreateRequest;
+import com.wjsguddnr.SecLog.study.dto.StudyPatchRequest;
+import com.wjsguddnr.SecLog.study.dto.StudyPutRequest;
 import com.wjsguddnr.SecLog.study.dto.StudyResponse;
 import com.wjsguddnr.SecLog.study.repository.StudyRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -57,5 +60,27 @@ public class StudyService {
                 study.getStudyDate(), study.getStudyMinutes()
         );
         return response;
+    }
+
+    @Transactional //해당 어노테이션이 붙어야 studyRepositoriy.save()없이 자동으로 업데이트 가능 <- 이를 Dirtychecking이라고 함
+    public void putStudy(Long id, StudyPutRequest request) {
+        Study study = studyRepository.findById(id).orElseThrow(); //조회후
+
+        study.put(
+                request.getTitle(), request.getContent(),
+                request.getCategory(), request.getStudyDate(),
+                request.getStudyMinutes()
+        ); //수정
+    }
+
+    @Transactional
+    public void patchStudy(Long id, StudyPatchRequest request) {
+        Study study = studyRepository.findById(id).orElseThrow();
+
+        study.patch(
+                request.getTitle(), request.getContent(),
+                request.getCategory(), request.getStudyDate(),
+                request.getStudyMinutes()
+        );
     }
 }
