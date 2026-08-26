@@ -50,4 +50,10 @@ public class StudyController {
         studyService.patchStudy(id, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteStudy(@PathVariable Long id){
+        studyService.deleteStudyById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

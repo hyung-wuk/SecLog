@@ -83,4 +83,11 @@ public class StudyService {
                 request.getStudyMinutes()
         );
     }
+
+    @Transactional //DirtyChecking을 위한것이 아닌 조회->삭제를 하나의 논리단위로 묶기위해 단 어노테이션
+    public void deleteStudyById(Long id){
+        Study study = studyRepository.findById(id).orElseThrow();
+
+        studyRepository.delete(study);
+    }
 }
